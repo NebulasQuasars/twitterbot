@@ -9,3 +9,5 @@ The TwitterDiscordScript requires a Discord app to be made, from which you creat
 Install the modules listed at the top of each scipt using the terminal (you'll see the names of these modules following "import").
 
 Due to Tweepy (the required Twitter python module) forbidding duplicate tweets, all tweet texts are automatically stored in a file entitled "tweeters.txt". Reply texts are in "reply_text.txt" and image links are in "image_links.txt". For each row of the spreadsheet, or for each command, the script will inspect these files to determine if there are duplicate statuses. If so, the row will be skipped. 
+
+Thanks for checking it out! - Molly
