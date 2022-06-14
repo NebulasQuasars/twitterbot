@@ -1,0 +1,44 @@
+import discord
+import os
+
+client = discord.Client()
+
+@client.event
+async def on_ready():
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="#tweet"))
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith("#tweet"):
+        word = "#tweet"
+        text = message.content
+        text = text.replace(word, "")
+        if int(len(text)) > 280:
+            await message.channel.send("**Unable to tweet **" +"_"+ text +"_"+"** This is " + str(int(len(text))-280)+ " characters over limit.**")
+        import tweepy
+        auth = tweepy.OAuthHandler("API_Token", "API_Secret")
+        auth.set_access_token("Bearer_Token", "Bearer_Secret")
+        api = tweepy.API(auth)
+        file1=open("/Path/To/tweeters.txt","r")
+        readfile = file1.read()
+        if str("^"+text+"^") in readfile:
+            await message.channel.send("**Unable to tweet **"+"_"+ text +"_"+ "** This is a duplicate.**")
+        else:
+            api.update_status(text)
+            tweets_list= api.user_timeline(count=1)
+            for status in tweets_list:
+                eyedee=status.id
+            await message.channel.send("**Tweeted **"+"_"+text+"_")
+            await message.channel.send("https://twitter.com/<TwitterBotHandle>/status/"+str(eyedee))
+            textfile = open("/Path/To/Pythonisms/tweeters.txt", "a")
+            print("")
+            print(message.author.name)
+            print(text)
+            textfile.write("\n"+"^"+text+"^" + "\n")
+            textfile.close()
+    if message.content.startswith('#help'):
+        await message.channel.send('Use the command **#tweet**, followed by desire your desired message, in order to tweet. Visit *@TheAcaiBot* on Twitter to see your results!')
+client.run("Discord_API_Token")
+
