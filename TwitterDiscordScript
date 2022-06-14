@@ -21,7 +21,7 @@ async def on_message(message):
         auth = tweepy.OAuthHandler("API_Token", "API_Secret")
         auth.set_access_token("Bearer_Token", "Bearer_Secret")
         api = tweepy.API(auth)
-        file1=open("/Path/To/tweeters.txt","r")
+        file1=open("/Path/To/status_text.txt","r")
         readfile = file1.read()
         if str("^"+text+"^") in readfile:
             await message.channel.send("**Unable to tweet **"+"_"+ text +"_"+ "** This is a duplicate.**")
@@ -32,7 +32,7 @@ async def on_message(message):
                 eyedee=status.id
             await message.channel.send("**Tweeted **"+"_"+text+"_")
             await message.channel.send("https://twitter.com/<TwitterBotHandle>/status/"+str(eyedee))
-            textfile = open("/Path/To/Pythonisms/tweeters.txt", "a")
+            textfile = open("/Path/To/status_text.txt", "a")
             print("")
             print(message.author.name)
             print(text)
