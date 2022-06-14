@@ -1,0 +1,273 @@
+import tweepy
+import random
+import time
+import gspread
+import pandas as pd
+from oauth2client.service_account import ServiceAccountCredentials
+import requests
+import re
+import os
+import math
+scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('/Path/To/JSON/File', scope)
+auth = tweepy.OAuthHandler("API_Token", "API_Secret")
+auth.set_access_token("Bearer_Token", "Bearer_Token_Secret")
+api = tweepy.API(auth)
+client = gspread.authorize(creds)
+sheet = client.open('Spreadsheet_Name')
+sheet_instance = sheet.get_worksheet(0)
+records_data = sheet_instance.get_all_cells()
+records_df = pd.DataFrame.from_dict(records_data)
+do = records_df.head()
+zofran = list(do)
+demise = sheet_instance.row_count
+p = 5
+tweeters = []
+userID="Twitter_Bot_Handle"
+statuses = api.user_timeline()
+useless= []
+for i in range(int(demise)):
+    z=str(i+1)
+    text = str(sheet_instance.cell(col=1, row=int(z)))
+    word = "<Cell R"+z+"C1 '"
+    text = text.replace(word, "")
+    word = "'>"
+    text = text.replace(word, "")
+    word =  '<Cell R'+z+'C1 "'
+    text = text.replace(word, "")
+    word = '">'
+    text = text.replace(word, "")
+    word = "\\n"
+    text = text.replace(word, " ")
+    word = "\\"
+    text = text.replace(word, "")
+    bloated = str(sheet_instance.cell(col=2, row=int(z)))
+    word = "<Cell R"+z+"C2 '"
+    bloated = bloated.replace(word, "")
+    word = "'>"
+    bloated = bloated.replace(word, "")
+    word =  '<Cell R'+z+'C2 "'
+    bloated = bloated.replace(word, "")
+    word = '">'
+    bloated = bloated.replace(word, "")
+    word = "\\n"
+    bloated = bloated.replace(word, " ")
+    word = "\\"
+    bloated = bloated.replace(word, "")
+    branding = str(sheet_instance.cell(col=3, row=int(z)))
+    word = "<Cell R"+z+"C3 '"
+    branding = branding.replace(word, "")
+    word = "'>"
+    branding = branding.replace(word, "")
+    word =  '<Cell R'+z+'C3 "'
+    branding = branding.replace(word, "")
+    word = '">'
+    branding = branding.replace(word, "")
+    word = "\\n"
+    branding = branding.replace(word, " ")
+    word = "\\"
+    branding = branding.replace(word, "")
+    if text == "<Cell R"+z+"C1 None>":
+        #No tweet text
+        if bloated == "<Cell R"+z+"C2 None>":
+                #No tweet text, no reply text
+                if branding == "<Cell R"+z+"C3 None>":
+                    #No tweet text, no reply text, no image text
+                    if i+1<int(demise):
+                        i = i+1
+                    else:
+                        break
+                else:
+                    #No tweet text, no reply text, but image text"
+                    file1=open("/Path/To/image_links.txt","r")
+                    readfile = file1.read()
+                    if branding in readfile:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                    else: 
+                        response = requests.get(str(branding))
+                        file = open("/Path/To/sample_image.png", "wb")
+                        file.write(response.content)
+                        file.close()
+                        image_path = "/Path/To/sample_image.png"
+                        file_size = os.path.getsize(image_path)
+                        if int(file_size) > 3000000:
+                            if i+1<int(demise):
+                                i = i+1
+                            else:
+                                break
+                        else: 
+                            time.sleep(int(p))
+                            text=""
+                            api.update_status_with_media(text,image_path)
+                            textfile = open("/Path/To/image_links.txt", "a")
+                            textfile.write(branding + "\n")
+                            textfile.close()
+                            if i+1<int(demise):
+                                i = i+1
+                            else:
+                                break
+        else:
+            #No tweet text, with reply text
+            if branding == "<Cell R"+z+"C3 None>":
+                #No tweet text, with reply text, no image text
+                if i+1<int(demise):
+                    i = i+1
+                else:
+                    break
+            else:
+                #With tweet text, with reply text, with image text
+                file1 = open("/Path/To/image_links.txt", "r")
+                readfile = file1.read()
+                file2 = open("/Path/To/reply_text.txt", "r")
+                readfile1=file2.read()
+                if branding in readfile:
+                    if text in readfile1:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                else:
+                    response = requests.get(str(branding))
+                    file = open("/Path/To/sample_image.png", "wb")
+                    file.write(response.content)
+                    file.close()
+                    image_path = "/Path/To/sample_image.png"
+                    file_size = os.path.getsize(image_path)
+                    if int(file_size) > 3000000:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                    else:
+                        time.sleep(int(p))
+                        text = ""
+                        api.update_status_with_media(text,image_path, in_reply_to_status_id=int(bloated), auto_populate_reply_metadata=True)
+                        textfile = open("/Path/To/image_links.txt", "a")
+                        textfile.write("\n" + branding + "\n")
+                        textfile.close()
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+    else:
+        #With tweet text
+        if bloated == "<Cell R"+z+"C2 None>":
+            #With tweet text, no reply text
+            if branding == "<Cell R"+z+"C3 None>":
+                #With tweet text, no reply text, no image text
+                file1=open("/Path/To/tweeters.txt","r")
+                readfile = file1.read()
+                if text in readfile:
+                    if i+1<int(demise):
+                        i = i+1
+                    else:
+                        break
+                else:
+                    time.sleep(int(p))
+                    api.update_status(text)
+                    textfile = open("/Path/To/tweeters.txt", "a")
+                    textfile.write("\n"+text + "\n")
+                    textfile.close()
+                    if i+1<int(demise):
+                        i = i+1
+                    else:
+                        break
+            else:
+                #with tweet text, no reply text, with image text
+                file1=open("/Path/To/image_links.txt","r")
+                readfile = file1.read()
+                file2=open("/Path/To/tweeters.txt","r")
+                readfile1=file2.read()
+                if branding in readfile:
+                    if text in readfile1:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                else: 
+                    response = requests.get(str(branding))
+                    file = open("/Path/To/sample_image.png", "wb")
+                    file.write(response.content)
+                    file.close()
+                    time.sleep(int(p))
+                    image_path = "/Path/To/sample_image.png"
+                    tweeters.append(text)
+                    file_size = os.path.getsize(image_path)
+                    if int(file_size) > 3000000:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                    else:
+                        api.update_status_with_media(text, image_path)
+                        textfile = open("/Path/To/image_links.txt", "a")
+                        textfile.write("\n"+branding + "\n")
+                        textfile = open("/Path/To/tweeters.txt", "a")
+                        textfile.write("\n"+branding + "\n")
+                        textfile.close()
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+        else:
+            #With tweet text, with reply text
+            if branding == "<Cell R"+z+"C3 None>":
+                #with tweet text, with reply text, no image text
+                file1 = open("/Path/To/reply_text.txt", "r")
+                readfile = file1.read()
+                if text in readfile:
+                    if i+1<int(demise):
+                        i = i+1
+                    else:
+                        break
+                else:
+                    time.sleep(int(p))
+                    api.update_status(text,in_reply_to_status_id=int(bloated), auto_populate_reply_metadata=True)
+                    textfile = open("/Path/To/reply_text.txt", "a")
+                    textfile.write("\n" + text + "\n")
+                    textfile.close()
+                    if i+1<int(demise):
+                        i = i+1
+                    else:
+                        break
+            else:
+                #with tweet text, with reply text, with image text
+                file1 = open("/Path/To/image_links.txt", "r")
+                readfile = file1.read()
+                file2 = open("/Path/To/reply_text.txt","r")
+                readfile1=file2.read()
+                if branding in readfile:
+                    if text in readfile1:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                else:
+                    response = requests.get(str(branding))
+                    file = open("/Path/To/sample_image.png", "wb")
+                    file.write(response.content)
+                    file.close()
+                    time.sleep(int(p))
+                    image_path = "/Path/To/sample_image.png"
+                    file_size = os.path.getsize(image_path)
+                    if int(file_size) > 3000000:
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
+                    else:
+                        api.update_status_with_media(text, image_path, in_reply_to_status_id=int(bloated), auto_populate_reply_metadata=True)
+                        tweeters.append(text)
+                        textfile = open("/Path/To/image_links.txt", "a")
+                        textfile.write("\n" + branding + "\n")
+                        textfile.close()
+                        textfile = open("/Path/To/reply_text.txt", "a")
+                        textfile.write("\n" + text + "\n")
+                        textfile.close()
+                        if i+1<int(demise):
+                            i = i+1
+                        else:
+                            break
