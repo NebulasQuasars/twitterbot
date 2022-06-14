@@ -2,7 +2,7 @@
 
 These codes are meant to be copy-pasted then adapted for your likening. Create a Twitter bot account, then enable it to become a developing account. You will need to fill out a short application in order to recieve APIs for read and write permissions.
 
-The TwitterGoogleScriptrequires a Google API, which may be found on their developer portal. You must download the JSON for the API that will have the API name/tokens in its title. You must also create a Google Sheet, with three columns (and preferably no unnecessary rows). The first column is the tweet text, the second is the reply tweet ID, and the third is the image link.
+The TwitterGoogleScript requires a Google API, which may be found on their developer portal. You must download the JSON for the API that will have the API name/tokens in its title. You must also create a Google Sheet, with three columns (and preferably no unnecessary rows). The first column is the tweet text, the second is the reply tweet ID, and the third is the image link.
 
 The TwitterDiscordScript requires a Discord app to be made, from which you create a bot account and receive its subsequent APIs. The log of who tweets what currently is created to be sent via the shell. 
 
